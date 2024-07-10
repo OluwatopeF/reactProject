@@ -25,7 +25,7 @@ export const AppReducer = (state, action) => {
                     ...state,
                 };
             } else {
-                // alert("Cannot increase the allocation! Out of funds");
+            //  alert("Cannot increase the allocation! Out of funds");
                 return {
                     ...state
                 }
@@ -43,6 +43,19 @@ export const AppReducer = (state, action) => {
                     ...state,
                     expenses: [...red_expenses],
                 };
+
+            case 'SUB_EXPENSE':
+                const reducedExpense = state.expenses.map((exp) =>
+                    exp.name === action.payload.name
+                        ? { ...exp, cost: Math.max(exp.cost - action.payload.cost, 0) }
+                        : exp
+                ).filter(exp => exp.cost > 0);
+    
+                return {
+                    ...state,
+                    expenses: reducedExpense,
+                };
+
             case 'DELETE_EXPENSE':
             action.type = "DONE";
             state.expenses.map((currentExp)=> {
@@ -68,8 +81,9 @@ export const AppReducer = (state, action) => {
             action.type = "DONE";
             state.currency = action.payload;
             return {
-                ...state
-            }
+                ...state,
+                currency: action.payload,
+            };
 
         default:
             return state;
